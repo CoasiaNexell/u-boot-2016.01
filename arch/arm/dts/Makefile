@@ -41,7 +41,8 @@ dtb-$(CONFIG_ARCH_S5P6818) += s5p6818-drone.dtb \
 	s5p6818-svt-ref.dtb \
 	s5p6818-kick-st.dtb \
 	s5p6818-artik711s-raptor.dtb \
-	s5p6818-con-svma.dtb
+	s5p6818-con-svma.dtb \
+	s5p6818-convergence-svmc.dtb
 
 dtb-$(CONFIG_ARCH_NXP5540) += nxp5540-evb.dtb
 
