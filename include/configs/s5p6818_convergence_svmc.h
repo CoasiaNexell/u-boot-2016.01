@@ -1,6 +1,6 @@
 /*
  * (C) Copyright 2016 Nexell
- * Sungwoo Park <swpark@nexell.co.kr> 
+ * Bongtae Kim <darius.kim@coasianexell.com>
  * 
  * SPDX-License-Identifier:      GPL-2.0+
  */
@@ -105,7 +105,7 @@
 #ifdef CONFIG_SYS_PROMPT
 #undef CONFIG_SYS_PROMPT
 /* Monitor Command Prompt   */
-#define CONFIG_SYS_PROMPT			"s5p6818_con_svma# "
+#define CONFIG_SYS_PROMPT			"s5p6818_convergence_svmc# "
 #endif
 /* undef to save memory	   */
 #define CONFIG_SYS_LONGHELP
@@ -347,7 +347,7 @@
 
 #define CONFIG_EXTRA_ENV_DTB_LOAD	\
 	"ext4load mmc 0:1 " __stringify(CONFIG_KERNEL_DTB_ADDR)	\
-	" s5p6818-con_svma-rev01.dtb;"				\
+	" s5p6818-convergence_svmc-rev01.dtb;"				\
 	"run dtb_reserve;"
 
 #define CONFIG_EXTRA_ENV_RAMDISK_LOAD				\
