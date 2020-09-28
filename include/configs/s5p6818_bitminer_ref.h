@@ -88,7 +88,7 @@
 /*-----------------------------------------------------------------------
  *  production test command
  */
-#define CONFIG_CMD_MFGTEST
+/* #define CONFIG_CMD_MFGTEST */
 #define CONFIG_CMD_TFTPPUT
 
 /*-----------------------------------------------------------------------

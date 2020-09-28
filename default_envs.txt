@@ -1,0 +1,18 @@
+bootdelay=0
+baudrate=115200
+ethprime=RTL8211
+ipaddr=192.168.1.36
+serverip=192.168.1.67
+autoload=no
+gatewayip=192.168.1.254
+netmask=255.255.255.0
+fdt_high=0xffffffffffffffff
+bootargs=console=ttySAC3,115200n8 root=/dev/mmcblk0p3 rw rootfstype=ext4 rootwait loglevel=4 quiet printk.time=1 consoleblank=0 systemd.log_level=info systemd.show_status=false
+boot_cmd_mmcboot=ext4load mmc 0:1 0x40080000 Image;ext4load mmc 0:1 0x49000000 s5p6818-bitminer-ref-rev01.dtb;run dtb_reserve;booti 0x40080000 - 0x49000000
+recoveryboot=not supported
+mmcboot=setenv bootargs "$bootargs eth=$ethaddr"; run boot_cmd_mmcboot
+bootcmd=run mmcboot
+boot_cmd_ramfsboot=ext4load mmc 0:1 0x40080000 Image;ext4load mmc 0:1 0x48000000 uInitrd;ext4load mmc 0:1 0x49000000 s5p6818-bitminer-ref-rev01.dtb;run dtb_reserve;booti 0x40080000 0x48000000 0x49000000
+ramfsboot=setenv bootargs console=ttySAC3,115200n8 root=/dev/ram0 loglevel=4 quiet printk.time=1 consoleblank=0 nx_drm.fb_buffers=3;run boot_cmd_ramfsboot 
+
+
