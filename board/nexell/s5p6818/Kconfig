@@ -36,6 +36,10 @@ config TARGET_S5P6818_CON_SVMA
 	help
 	  Support for s5p6818 con_svma platform.
 
+config TARGET_S5P6818_BITMINER_REF
+	bool "S5P6818_BITMINER_REF"
+	help
+	  Support for s5p6818 bitminer_ref platform.
 endchoice
 
 config SYS_VENDOR
