@@ -1,7 +1,7 @@
 /*
  * (C) Copyright 2016 Nexell
  * Bongtae Kim <darius.kim@coasianexell.com>
- * 
+ *
  * SPDX-License-Identifier:      GPL-2.0+
  */
 #ifndef __CONFIG_H__
@@ -322,6 +322,7 @@
 	"splashfile=logo.bmp\0"				\
 	"splashsource=mmc_fs\0"				\
 	"splashoffset=" __stringify(CONFIG_SPLASH_MMC_OFFSET)"\0"	\
+	"splashpos=m,m\0"					\
 	"fb_addr=\0"						\
 	"dtb_reserve="						\
 	"if test -n \"$fb_addr\"; then "	\
