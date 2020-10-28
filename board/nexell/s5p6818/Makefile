@@ -11,4 +11,6 @@ obj-$(CONFIG_TARGET_AVN_REF)	+= avn_ref/
 obj-$(CONFIG_TARGET_SVT_REF)	+= svt_ref/
 obj-$(CONFIG_TARGET_KICK_ST)	+= kick_st/
 obj-$(CONFIG_TARGET_ARTIK711S_RAPTOR)	+= artik711s_raptor/
-obj-$(CONFIG_TARGET_S5P6818_CON_SVMA)	+= con_svma/
+obj-$(CONFIG_TARGET_S5P6818_CON_SVMA)	+= con_svma /
+obj-$(CONFIG_TARGET_VAPOR_GANG)	+= vapor_gang /
+
