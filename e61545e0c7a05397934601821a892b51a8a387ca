@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "d97e2b1d_40807789",
+        "filename": "drivers/pwm/pwm-nexell.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2020-11-20T03:39:20Z",
+      "side": 1,
+      "message": "fix checkpatch.pl\n\n-\u003e line over 80 characters",
+      "range": {
+        "startLine": 107,
+        "startChar": 1,
+        "endLine": 107,
+        "endChar": 77
+      },
+      "revId": "e61545e0c7a05397934601821a892b51a8a387ca",
+      "serverId": "f3c90331-7953-4206-aadc-b7348badd027",
+      "unresolved": true
+    }
+  ]
+}
