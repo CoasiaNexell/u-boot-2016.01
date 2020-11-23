@@ -22,6 +22,30 @@
       "revId": "e61545e0c7a05397934601821a892b51a8a387ca",
       "serverId": "f3c90331-7953-4206-aadc-b7348badd027",
       "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "e12e2deb_0a979978",
+        "filename": "drivers/pwm/pwm-nexell.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 107,
+      "author": {
+        "id": 1000009
+      },
+      "writtenOn": "2020-11-23T01:10:22Z",
+      "side": 1,
+      "message": "Ack",
+      "parentUuid": "d97e2b1d_40807789",
+      "range": {
+        "startLine": 107,
+        "startChar": 1,
+        "endLine": 107,
+        "endChar": 77
+      },
+      "revId": "e61545e0c7a05397934601821a892b51a8a387ca",
+      "serverId": "f3c90331-7953-4206-aadc-b7348badd027",
+      "unresolved": false
     }
   ]
 }
