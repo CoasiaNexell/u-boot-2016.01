@@ -130,7 +130,8 @@ int pwm_config(int pwm_id, int duty_ns, int period_ns)
 	tcon &= ~TCON_UPDATE(pwm_id);
 	writel(tcon, &pwm->tcon);
 
-	pwm_enable(pwm_id);
+	nx_gpio_set_pad_function(pwm_dev[pwm_id].grp, pwm_dev[pwm_id].bit,
+				 pwm_dev[pwm_id].pwm_fn);
 
 	return 0;
 }
@@ -172,9 +173,6 @@ int pwm_init(int pwm_id, int div, int invert)
 	if (invert && (pwm_id < 4))
 		val |= TCON_INVERTER(pwm_id);
 	writel(val, &pwm->tcon);
-
-	nx_gpio_set_pad_function(pwm_dev[pwm_id].grp, pwm_dev[pwm_id].bit,
-				 pwm_dev[pwm_id].pwm_fn);
 
 	return 0;
 }
