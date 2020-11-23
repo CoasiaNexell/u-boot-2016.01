@@ -115,6 +115,7 @@ static void board_backlight_enable(void)
 		TO_DUTY_NS(CONFIG_BACKLIGHT_DUTY, CONFIG_BACKLIGHT_HZ),
 		TO_PERIOD_NS(CONFIG_BACKLIGHT_HZ)
 		);
+	pwm_enable(CONFIG_BACKLIGHT_CH);
 #if SUPPORT_SECONDARY_DISPLAY
 	/* Secondary(LVDS) : PWM3_SLED */
 	pwm_init(
@@ -126,6 +127,7 @@ static void board_backlight_enable(void)
 		TO_DUTY_NS(CONFIG_SBACKLIGHT_DUTY, CONFIG_SBACKLIGHT_HZ),
 		TO_PERIOD_NS(CONFIG_SBACKLIGHT_HZ)
 		);
+	pwm_enable(CONFIG_SBACKLIGHT_CH);
 #endif
 #endif
 }

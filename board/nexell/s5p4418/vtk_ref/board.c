@@ -172,6 +172,7 @@ static void board_backlight_enable(void)
 		TO_DUTY_NS(CONFIG_BACKLIGHT_DUTY, CONFIG_BACKLIGHT_HZ),
 		TO_PERIOD_NS(CONFIG_BACKLIGHT_HZ)
 		);
+	pwm_enable(CONFIG_BACKLIGHT_CH);
 #endif
 
     // Turn on VCC5V_LVDSLED
