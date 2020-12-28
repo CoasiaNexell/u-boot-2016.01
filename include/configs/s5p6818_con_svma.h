@@ -1,7 +1,7 @@
 /*
  * (C) Copyright 2016 Nexell
- * Sungwoo Park <swpark@nexell.co.kr> 
- * 
+ * Sungwoo Park <swpark@nexell.co.kr>
+ *
  * SPDX-License-Identifier:      GPL-2.0+
  */
 #ifndef __CONFIG_H__
@@ -105,7 +105,7 @@
 #ifdef CONFIG_SYS_PROMPT
 #undef CONFIG_SYS_PROMPT
 /* Monitor Command Prompt   */
-#define CONFIG_SYS_PROMPT			"s5p6818_con_svma# "
+#define CONFIG_SYS_PROMPT			"nxp5430_con_svma# "
 #endif
 /* undef to save memory	   */
 #define CONFIG_SYS_LONGHELP
@@ -309,19 +309,61 @@
 #define CONFIG_SUPPORT_RAW_INITRD
 #define CONFIG_RECOVERY_BOOT
 
+/* partition number infomation */
+/* 1,2 - bootloader_a, bootloader_b */
+/* 3,5 - boot_a, boot_b */
+/* 6,7 - system_a, system_b */
+/* 8,9 - vendor_a, vendor_b */
+/* 10(A)   - misc */
+/* 11(B)   - data */
+
+/* #define CONTROL_PARTITION 8 //"misc" */
+#define CONTROL_PARTITION C //"misc"
+
+#if defined(CONFIG_CMD_AB_SELECT)
+#ifdef QUICKBOOT
+#define SUCESS_AB_SELECT ""
+#else
+#define SUCESS_AB_SELECT \
+	"echo ab_select get slot_name success;"
+#endif
+#define SET_AB_SELECT \
+       "if ab_select slot_name mmc 0:${misc_partition_num}; " \
+       "then " \
+               SUCESS_AB_SELECT	\
+       "else " \
+               "echo ab_select get slot_name failed, set slot \"a\";" \
+               "setenv slot_name a;" \
+       "fi;" \
+       "setenv slot_suffix _${slot_name};" \
+       "setenv android_boot_option androidboot.slot_suffix=${slot_suffix};" \
+       "setenv android_boot_ab run bootcmd_${slot_name};" \
+       "if test ${slot_name} = a ; " \
+       "then " \
+               "setenv root_dev_blk_system_ab /dev/mmcblk0p8 ;" \
+       "else " \
+               "setenv root_dev_blk_system_ab /dev/mmcblk0p9 ;" \
+       "fi;" \
+       "setenv bootargs_ab1 root=${root_dev_blk_system_ab};" \
+       "setenv bootargs_ab2 ${android_boot_option};"
+#else
+#define SET_AB_SELECT ""
+#endif //CONFIG_CMD_AB_SELECT
+
 /*-----------------------------------------------------------------------
  * ENV
  */
 #define CONFIG_REVISION_TAG 1
 /* need to relocate env address */
-#define	CONFIG_KERNEL_DTB_ADDR	0x49000000
-#define	CONFIG_BMP_LOAD_ADDR	0x50000000
+#define CONFIG_KERNEL_DTB_ADDR	0x49000000
+#define CONFIG_BMP_LOAD_ADDR	0x80000000
 
 #define CONFIG_EXTRA_ENV_BOOT_LOGO				\
 	"splashimage=" __stringify(CONFIG_BMP_LOAD_ADDR)"\0"	\
 	"splashfile=logo.bmp\0"				\
 	"splashsource=mmc_fs\0"				\
 	"splashoffset=" __stringify(CONFIG_SPLASH_MMC_OFFSET)"\0"	\
+	"splashpos=m,m\0"					\
 	"fb_addr=\0"						\
 	"dtb_reserve="						\
 	"if test -n \"$fb_addr\"; then "	\
@@ -332,13 +374,13 @@
 	"fi;\0"
 
 #define CONFIG_EXTRA_ENV_CMD_BOOT_ARGS				\
-	"bootargs=console=ttySAC0,115200n8 "			\
+	"bootargs=console=ttySAC3,115200n8 "			\
 	"root=/dev/mmcblk0p3 rw rootfstype=ext4 rootwait "	\
 	"loglevel=4 quiet printk.time=1 consoleblank=0 "	\
 	"systemd.log_level=info systemd.show_status=false\0"
 
 #define CONFIG_EXTRA_ENV_CMD_BOOT_ARGS_RAMDISK			\
-        "setenv bootargs console=ttySAC0,115200n8 " \
+        "setenv bootargs console=ttySAC3,115200n8 " \
         "root=/dev/ram0 loglevel=4 quiet printk.time=1 consoleblank=0 " \
         "nx_drm.fb_buffers=3;"
 
@@ -347,38 +389,86 @@
 
 #define CONFIG_EXTRA_ENV_DTB_LOAD	\
 	"ext4load mmc 0:1 " __stringify(CONFIG_KERNEL_DTB_ADDR)	\
-	" s5p6818-con_svma-rev01.dtb;"				\
+	" s5p6818-avn-ref-rev01.dtb;"				\
 	"run dtb_reserve;"
 
 #define CONFIG_EXTRA_ENV_RAMDISK_LOAD				\
 	"ext4load mmc 0:1 0x48000000 uInitrd;"
 
 #define CONFIG_EXTRA_ENV_CMD_RUN_KERNEL				\
-	"booti 0x40080000 - "				 	\
+	"booti 0x40080000 - "					\
 	__stringify(CONFIG_KERNEL_DTB_ADDR)"\0"
 
 #define CONFIG_EXTRA_ENV_CMD_RUN_KERNEL_FOR_INITRAMFS		\
-	"booti 0x40080000 0x48000000 "			  	\
+	"booti 0x40080000 0x48000000 "				\
 	__stringify(CONFIG_KERNEL_DTB_ADDR)"\0"
 
 #define CONFIG_RECOVERY_BOOT_CMD	\
-	"recoveryboot=not supported\0"
+	"recoveryboot=run set_ab_select;" \
+	"setenv bootargs \"${recovery_bootargs} androidboot.slot_suffix=${slot_suffix}\";" \
+	"run recovery_bootcmd_${slot_name}" \
+	"\0"
 
 #define CONFIG_AUTORECOVERY_CMD		\
 	"autorecovery_cmd=none\0"
 
+#define CONFIG_CHANGE_DEVICETREE_UPDATE \
+	"change_devicetree=run set_devicetree\0" \
+	"set_devicetree=" \
+	"fdt addr "__stringify(CONFIG_KERNEL_DTB_ADDR)";fdt resize;"	\
+	"if test ${rear_cam} -eq 2; then " \
+		"fdt set /soc/clipper0 status okay;" \
+		"fdt set /soc/decimator0 status okay;" \
+		"fdt set /soc/mipi_csi status okay;" \
+	"elif test ${rear_cam} -eq 1; then " \
+		"fdt set /soc/clipper2 status okay;" \
+		"fdt set /soc/decimator2 status okay;" \
+	"else " \
+		"if test ${cam_input} -eq 0; then " \
+			"setenv bootargs ${bootargs} ${nxquickrear_args_0}; "\
+			"fdt set /soc/clipper2 status okay;" \
+			"fdt set /soc/decimator2 status okay;" \
+		"elif test ${cam_input} -eq 1; then " \
+			"setenv bootargs ${bootargs} ${nxquickrear_args_1}; "\
+			"fdt set /soc/clipper9 status okay;" \
+			"fdt set /soc/decimator9 status okay;" \
+		"fi;" \
+	"fi;" \
+	"if test ${sub_board} -eq 0; then " \
+		"fdt set /soc/dw_mmc_btwifi@c0068000 status okay;" \
+		"fdt set /nx_bt status okay;" \
+		"fdt set /nx_wlan status okay;" \
+	"else " \
+		"fdt set /soc/dw_mmc@c0068000 status okay;" \
+	"fi;\0"
+
+#define CONFIG_EXTRA_OTA_AB_UPDATE \
+        "misc_partition_num=" __stringify(CONTROL_PARTITION) "\0"       \
+        "set_ab_select=" \
+                SET_AB_SELECT \
+                "\0" \
+        "set_bootargs_ab1=setenv bootargs \"${bootargs} ${bootargs_ab1}\" \0" \
+        "set_bootargs_ab2=setenv bootargs \"${bootargs} ${bootargs_ab2}\" \0" \
+        "bootcmd_set_ab=run set_ab_select;" \
+                       "run set_bootargs_ab1;" \
+                       "run set_bootargs_ab2;" \
+                       "\0"                    \
+        "bootcmd=run bootcmd_set_ab;run bootcmd_set_rearcam; run android_boot_ab\0"
+
 #define CONFIG_SYS_EXTRA_ENV_RELOC
 #define CONFIG_EXTRA_ENV_SETTINGS				\
 	"fdt_high=0xffffffffffffffff\0"				\
+	"bootcmd_set_rearcam=setenv bootargs \"${bootargs} nx_rearcam=${rear_cam}\" \0" \
 	CONFIG_EXTRA_ENV_CMD_BOOT_ARGS				\
 	"boot_cmd_mmcboot="					\
 		CONFIG_EXTRA_ENV_KERNEL_LOAD			\
 		CONFIG_EXTRA_ENV_DTB_LOAD			\
 		CONFIG_EXTRA_ENV_CMD_RUN_KERNEL			\
-	CONFIG_RECOVERY_BOOT_CMD		    		\
+	CONFIG_RECOVERY_BOOT_CMD				\
 	CONFIG_AUTORECOVERY_CMD					\
 	"mmcboot=run boot_cmd_mmcboot\0"			\
-	"bootcmd=run mmcboot\0"					\
+	CONFIG_CHANGE_DEVICETREE_UPDATE				\
+	CONFIG_EXTRA_OTA_AB_UPDATE				\
 	CONFIG_EXTRA_ENV_BOOT_LOGO				\
         "boot_cmd_ramfsboot="					\
 		CONFIG_EXTRA_ENV_KERNEL_LOAD			\
@@ -393,5 +483,4 @@
 #define CONFIG_SYS_CONSOLE_INFO_QUIET
 #define CONFIG_BOOST_MMC
 #endif
-
 #endif /* __CONFIG_H__ */
