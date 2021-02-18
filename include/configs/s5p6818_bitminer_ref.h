@@ -297,7 +297,7 @@
 
 #define CONFIG_EXTRA_ENV_CMD_BOOT_ARGS				\
 	"bootargs=console=ttySAC3,115200n8 "			\
-	"root=/dev/mmcblk0p3 rw rootfstype=ext4 rootwait "	\
+	"root=/dev/mmcblk0p2 rw rootfstype=ext4 rootwait "	\
 	"loglevel=4 quiet printk.time=1 consoleblank=0 "	\
 	"systemd.log_level=info systemd.show_status=false\0"
 
