@@ -1,0 +1,520 @@
+/*
+ * (C) Copyright 2021 Nexell
+ * Jongshin, Park <pjsin865@coasia.com>
+ *
+ * SPDX-License-Identifier:      GPL-2.0+
+ */
+
+/*
+ * Config Value
+ */
+
+#define GPIO_POWER_KEY_DET
+
+
+/*
+ * Default Value
+ */
+
+/* USB Limit Value */
+#define AXP228_USB_LIMIT_900 0x00 /* USB3.0 : 900mA */
+#define AXP228_USB_LIMIT_500 0x01 /* USB2.0 : 500mA */
+#define AXP228_USB_LIMIT_NO 0x03 /* No limit current */
+
+#define AXP228_BAT_CUTOFF_VOL 3300000 /* VAL(uV), No Charger */
+#define AXP228_BAT_LOWBAT_BATTERY_VOL 3500000 /* VAL(uV), No Charger */
+#define AXP228_BAT_LOWBAT_USB_PC_VOL 3600000 /* VAL(uV), USB Charger */
+#define AXP228_BAT_LOWBAT_USB_ADP_VOL 3660000 /* VAL(uV), USB Charger */
+#define AXP228_BAT_LOWBAT_ADP_VOL 3660000 /* VAL(uV), ADP Charger */
+
+/* DC-DC and charger frequency-spread Set, 0:Off 1:On */
+#define AXP228_FREQ_SPREAD_EN 0
+
+/* DC-DC and charger spread frequency Set, 0:50KHz 1:100KHz */
+#define AXP228_SPREAD_FREQ 0
+
+/* DC-DC 2&3 Poly-phase function enable/disable, 0:disable  1:enable */
+#define AXP228_POLY_PHASE_FUNCTION 0
+
+/* DCDC Switch frequency*/
+/* 8:3.000MHz, 7:2.850MHz, 6:2.700MHz, 5:2.550MHz, 4:2.400 MHz
+    3:2.250MHz, 2:2.100 MHz, 1:1.950 MHz, 0:1.800 MHz */
+#define AXP228_DCDC_SWITCH_FREQ 8
+
+/* DCDC and LDO Min/Max/Step Value */
+#define AXP228_DCDC1_MIN 1600000
+#define AXP228_DCDC1_MAX 3400000
+#define AXP228_DCDC1_STEP 100000
+#define AXP228_DCDC2_MIN 600000
+#define AXP228_DCDC2_MAX 1540000
+#define AXP228_DCDC2_STEP 20000
+#define AXP228_DCDC3_MIN 600000
+#define AXP228_DCDC3_MAX 1860000
+#define AXP228_DCDC3_STEP 20000
+#define AXP228_DCDC4_MIN 600000
+#define AXP228_DCDC4_MAX 1540000
+#define AXP228_DCDC4_STEP 20000
+#define AXP228_DCDC5_MIN 1000000
+#define AXP228_DCDC5_MAX 2550000
+#define AXP228_DCDC5_STEP 50000
+#define AXP228_ALDO1_MIN 700000
+#define AXP228_ALDO1_MAX 3300000
+#define AXP228_ALDO1_STEP 100000
+#define AXP228_ALDO2_MIN 700000
+#define AXP228_ALDO2_MAX 3300000
+#define AXP228_ALDO2_STEP 100000
+#define AXP228_ALDO3_MIN 700000
+#define AXP228_ALDO3_MAX 3300000
+#define AXP228_ALDO3_STEP 100000
+#define AXP228_DLDO1_MIN 700000
+#define AXP228_DLDO1_MAX 3300000
+#define AXP228_DLDO1_STEP 100000
+#define AXP228_DLDO2_MIN 700000
+#define AXP228_DLDO2_MAX 3300000
+#define AXP228_DLDO2_STEP 100000
+#define AXP228_DLDO3_MIN 700000
+#define AXP228_DLDO3_MAX 3300000
+#define AXP228_DLDO3_STEP 100000
+#define AXP228_DLDO4_MIN 700000
+#define AXP228_DLDO4_MAX 3300000
+#define AXP228_DLDO4_STEP 100000
+#define AXP228_ELDO1_MIN 700000
+#define AXP228_ELDO1_MAX 3300000
+#define AXP228_ELDO1_STEP 100000
+#define AXP228_ELDO2_MIN 700000
+#define AXP228_ELDO2_MAX 3300000
+#define AXP228_ELDO2_STEP 100000
+#define AXP228_ELDO3_MIN 700000
+#define AXP228_ELDO3_MAX 3300000
+#define AXP228_ELDO3_STEP 100000
+#define AXP228_DC5LDO_MIN 700000
+#define AXP228_DC5LDO_MAX 1400000
+#define AXP228_DC5LDO_STEP 100000
+
+/* DCDC-LDO Name */
+#define AXP228_DCDC1_NAME "VCC3P3_CORE" /* dcdc1 */
+#define AXP228_DCDC2_NAME "VCC_ARM" /* dcdc2 */
+#define AXP228_DCDC3_NAME "VCC_CORE" /* dcdc3 */
+#define AXP228_DCDC4_NAME "VCC1P5_DDRIO" /* dcdc4 */
+#define AXP228_DCDC5_NAME "VCC1P5_DDR" /* dcdc5 */
+#define AXP228_ALDO1_NAME "VCC3P3_ALIVE" /* aldo1 */
+#define AXP228_ALDO2_NAME "VCC1P8_ALIVE" /* aldo2 */
+#define AXP228_ALDO3_NAME "VCC1P0_ALIVE" /* aldo3 */
+#define AXP228_DLDO1_NAME "VCC3P3_LDO" /* dldo1 */
+#define AXP228_DLDO2_NAME "USER_DL2" /* dldo2 */
+#define AXP228_DLDO3_NAME "USER_DL3" /* dldo3 */
+#define AXP228_DLDO4_NAME "USER_DL4" /* dldo4 */
+#define AXP228_ELDO1_NAME "VCC1P8_CORE" /* eldo1 */
+#define AXP228_ELDO2_NAME "USER_EL2" /* eldo2 */
+#define AXP228_ELDO3_NAME "USER_EL3" /* eldo3 */
+#define AXP228_DC5LDO_NAME "VCC1P0_CORE" /* dc5ldo */
+
+/* DCDC-LDO Voltage Value */
+#define AXP228_DCDC1_VOL_VALUE 3300000 /* 1600~3400, 100/setp */
+#define AXP228_DCDC2_VOL_VALUE 1250000 /* 600~1540, 20/step */
+#define AXP228_DCDC3_VOL_VALUE 1100000 /* 600~1860, 20/step */
+#define AXP228_DCDC4_VOL_VALUE 1500000 /* 600~1540, 20/step */
+#define AXP228_DCDC5_VOL_VALUE 1500000 /* 1000~2550, 50/step */
+#define AXP228_ALDO1_VOL_VALUE 3300000 /* 700~3300, 100/step */
+#define AXP228_ALDO2_VOL_VALUE 1800000 /* 700~3300, 100/step */
+#define AXP228_ALDO3_VOL_VALUE 1000000 /* 700~3300, 100/step */
+#define AXP228_DLDO1_VOL_VALUE 3300000 /* 700~3300, 100/step */
+#define AXP228_DLDO2_VOL_VALUE 700000 /* 700~3300, 100/step */
+#define AXP228_DLDO3_VOL_VALUE 700000 /* 700~3300, 100/step */
+#define AXP228_DLDO4_VOL_VALUE 700000 /* 700~3300, 100/step */
+#define AXP228_ELDO1_VOL_VALUE 1800000 /* 700~3300, 100/step */
+#define AXP228_ELDO2_VOL_VALUE 700000 /* 700~3300, 100/step */
+#define AXP228_ELDO3_VOL_VALUE 700000 /* 700~3300, 100/step */
+#define AXP228_DC5LDO_VOL_VALUE 1000000 /* 700~1400, 100/step */
+
+/* DCDC-LDO Voltage Enable Value */
+#define AXP228_DCDC1_ENABLE 1
+#define AXP228_DCDC2_ENABLE 1
+#define AXP228_DCDC3_ENABLE 1
+#define AXP228_DCDC4_ENABLE 1
+#define AXP228_DCDC5_ENABLE 1
+#define AXP228_ALDO1_ENABLE 1
+#define AXP228_ALDO2_ENABLE 1
+#define AXP228_ALDO3_ENABLE 1
+#define AXP228_DLDO1_ENABLE 0
+#define AXP228_DLDO2_ENABLE 0
+#define AXP228_DLDO3_ENABLE 0
+#define AXP228_DLDO4_ENABLE 0
+#define AXP228_ELDO1_ENABLE 1
+#define AXP228_ELDO2_ENABLE 0
+#define AXP228_ELDO3_ENABLE 0
+#define AXP228_DC5LDO_ENABLE 1
+#define AXP228_DC1SW_ENABLE 0
+
+/* DCDC-LDO Sleep Enable Value
+ * 0:sleep on, 1:sleep off */
+#define AXP228_DCDC1_SLEEP 1 /* VCC3P3_CORE */
+#define AXP228_DCDC2_SLEEP 1 /* VCC_ARM */
+#define AXP228_DCDC3_SLEEP 1 /* VCC_CORE */
+#define AXP228_DCDC4_SLEEP 1 /* VCC1P5_DDRIO */
+#define AXP228_DCDC5_SLEEP 0 /* VCC1P5_DDR */
+#define AXP228_ALDO1_SLEEP 0 /* VCC3P3_ALIVE */
+#define AXP228_ALDO2_SLEEP 0 /* VCC1P8_ALIVE */
+#define AXP228_ALDO3_SLEEP 0 /* VCC1P0_ALIVE */
+#define AXP228_DLDO1_SLEEP 1 /* VCC3P3_LDO */
+#define AXP228_DLDO2_SLEEP 1 /* USER_DL2 */
+#define AXP228_DLDO3_SLEEP 1 /* USER_DL3 */
+#define AXP228_DLDO4_SLEEP 1 /* USER_DL4 */
+#define AXP228_ELDO1_SLEEP 1 /* VCC1P8_CORE */
+#define AXP228_ELDO2_SLEEP 1 /* USER_EL2 */
+#define AXP228_ELDO3_SLEEP 1 /* USER_EL3 */
+#define AXP228_DC5LDO_SLEEP 1 /* VCC1P0_CORE */
+
+/* REG 80H : DC-DC Work mode */
+#define AXP228_DCDC1_WORK_MODE 0
+#define AXP228_DCDC2_WORK_MODE 1
+#define AXP228_DCDC3_WORK_MODE 1
+#define AXP228_DCDC4_WORK_MODE 1
+#define AXP228_DCDC5_WORK_MODE 0
+
+/* REG 31H: Wakeup Control and Voff Voltage Set */
+#define AXP228_VOFF_SET_VAL 0x00
+
+/* REG 32H: Power off Set, Battery detection and CHGLED Control */
+/* REG 32H: Power off control */
+#define AXP228_PWR_OFF_CTRL 1
+
+/* REG 32H: Battery detection Set : 0:Off, 1:On */
+#define AXP228_BAT_DET_SET 1
+
+/* REG 32H: CHGLED PIN Set
+ * 0: High-Z, 1: 25% 0.5Hz toggle, 2: 25% 2Hz toggle, 3: Output Low */
+#define AXP228_CHGLED_PIN_SET 0
+
+/* REG 32H: CHGLED PIN Control Set
+ * 0: REGREG 32HBit[5:4] Control, 1: Controlled by charge module */
+#define AXP228_CHGLED_PIN_CTRL 0
+
+/* REG 32H: Sequence when Power Output Off
+ * 0:All Power Output Off at the same time
+ * 1:Reverse to the power on sequence */
+#define AXP228_PWR_OFF_SEQ 0
+
+/* REG 32H: pek delay set : 0:8mS, 1:16mS, 2:32mS, 3:64mS*/
+#define AXP228_PEK_DELAY 2
+
+
+/* REG 36H: PEK Parameter Set */
+/* REG 36H 7-6bit: power on time : 0:128mS, 1:1S, 2:2S, 3:3S */
+#define AXP228_PEK_ON 0
+
+/* REG 36H 5-4bit: Long key time : 0:1S, 1:1.5S, 2:2S, 3:2.5S */
+#define AXP228_PEK_LONG 1
+
+/* REG 36H 3bit: Power off time : 0:4S, 1:6S, 2:8S, 3:10S */
+#define AXP228_PEK_OFF 1
+
+/* REG 36H 2bit: Re-startup or not after hardware power off : 0:No, 1:Yes */
+#define AXP228_PEK_OFF_RESTART 0
+
+/* REG 36H 1-0bit: Hardwar Power off function set
+ * when key down time longer than Power off Time : 0:Off, 1:On*/
+#define AXP228_PEK_OFF_EN 1
+
+/* REG 84H: ADC Sample rate Set ,TS Pin Control */
+#define AXP228_ADC_CONTROL3_BIT 0x04
+
+/* REG 8FH: IC over temperature Power off function Set */
+/* REG 8FH 7bit: IRQ PIN triggered Power on or Wakeup function Set
+ * 0:Off, 1:On */
+#define AXP228_IRQ_WAKEUP 0
+
+/* REG 8FH 6bit: ACIN/VBUS In-short function Set
+ * 0:auto detection, 1:set by REG8F_[5] */
+#define AXP228_VBUSACIN_FUNC 0
+
+/* REG 8FH 5bit: ACIN/VBUS In-short status and Set
+ * 0:not In-short, 1:In-short */
+#define AXP228_VBUSACIN_STATUS 0
+
+/* REG 8FH 4bit: N_VBUSEN PIN function Control
+ * 0:Output Pin, as DRIVEVBUS function(Output to enable the OTG 5V Boost module)
+ * 1:Input Pin, Control VBUS Path */
+#define AXP228_VBUS_EN 0
+
+/* REG 8FH 3bit: Init 16's Reset PMU en */
+#define AXP228_PMU_RESET 0
+
+/* REG 8FH 2bit: AXP228 internal over temperature Power off function Set
+ * 0:do not Power off, 1: Power off */
+#define AXP228_OVERTMU_PWR_OFF 0
+
+
+/* Init CHGLED function*/
+#define CHGLEDFUN 1
+
+/* set CHGLED Indication Type*/
+#define CHGLEDTYPE 0
+
+/* Init battery capacity correct function*/
+#define BATCAPCORRENT 1
+
+/* Init battery regulator enable or not when charge finish*/
+#define BATREGUEN 0
+
+#define BATDET 1
+
+/* OCV Table */
+#define OCVREG0 0 //3.13V
+#define OCVREG1 0 //3.27V
+#define OCVREG2 0 //3.34V
+#define OCVREG3 0 //3.41V
+#define OCVREG4 0 //3.48V
+#define OCVREG5 0 //3.52V
+#define OCVREG6 0 //3.55V
+#define OCVREG7 0 //3.57V
+#define OCVREG8 0 //3.59V
+#define OCVREG9 0 //3.61V
+#define OCVREGA 1 //3.63V
+#define OCVREGB 5 //3.64V
+#define OCVREGC 7 //3.66V
+#define OCVREGD 13 //3.70V
+#define OCVREGE 19 //3.73V
+#define OCVREGF 32 //3.77V
+#define OCVREG10 40 //3.78V
+#define OCVREG11 47 //3.80V
+#define OCVREG12 51 //3.82V
+#define OCVREG13 55 //3.84V
+#define OCVREG14 60 //3.85V
+#define OCVREG15 64 //3.87V
+#define OCVREG16 70 //3.91V
+#define OCVREG17 77 //3.94V
+#define OCVREG18 83 //3.98V
+#define OCVREG19 88 //4.01V
+#define OCVREG1A 90 //4.05V
+#define OCVREG1B 93 //4.08V
+#define OCVREG1C 94 //4.10V
+#define OCVREG1D 96 //4.12V
+#define OCVREG1E 98 //4.14V
+#define OCVREG1F 100 //4.15V
+
+#define BATRDC 221
+
+/* Battery capacity */
+#define BATCAP 2974
+
+/ {
+	init-axp228 {
+		axp228,freq_spread_en = <AXP228_FREQ_SPREAD_EN>;
+		axp228,spread_freq = <AXP228_SPREAD_FREQ>;
+		axp228,cfg_poly_phase_function = <AXP228_POLY_PHASE_FUNCTION>;
+		axp228,switch_freq = <AXP228_DCDC_SWITCH_FREQ>;
+
+		axp228,voff_set = <AXP228_VOFF_SET_VAL>;
+		axp228,adc_control3 = <AXP228_ADC_CONTROL3_BIT>;
+
+		axp228,pek_on = <AXP228_PEK_ON>;
+		axp228,pek_long = <AXP228_PEK_LONG>;
+		axp228,pek_off_en = <AXP228_PEK_OFF_EN>;
+		axp228,pek_off_restart = <AXP228_PEK_OFF_RESTART>;
+		axp228,pek_off = <AXP228_PEK_OFF>;
+		axp228,pek_delay = <AXP228_PEK_DELAY>;
+
+		axp228,irq_wakeup = <AXP228_IRQ_WAKEUP>;
+		axp228,vbusacin_func = <AXP228_VBUSACIN_FUNC>;
+		axp228,vbusacin_status = <AXP228_VBUSACIN_STATUS>;
+		axp228,vbus_en = <AXP228_VBUS_EN>;
+		axp228,pmu_reset = <AXP228_PMU_RESET>;
+		axp228,overtmu_pwr_off = <AXP228_OVERTMU_PWR_OFF>;
+	}; /* init-axp228 */
+
+	voltage-regulators {
+		dcdc1: BUCK0 {
+			regulator-name = AXP228_DCDC1_NAME;
+			regulator-min-microvolt = <AXP228_DCDC1_MIN>;
+			regulator-max-microvolt = <AXP228_DCDC1_MAX>;
+			regulator-always-on = <1>;
+			regulator-boot-on = <1>;
+
+			buck,vol = <AXP228_DCDC1_VOL_VALUE>;
+			buck,on = <AXP228_DCDC1_ENABLE>;
+			buck,sleep = <AXP228_DCDC1_SLEEP>;
+			buck,work_mode = <AXP228_DCDC1_WORK_MODE>;
+		};
+
+		dcdc2: BUCK1 {
+			regulator-name = AXP228_DCDC2_NAME;
+			regulator-min-microvolt = <AXP228_DCDC2_MIN>;
+			regulator-max-microvolt = <AXP228_DCDC2_MAX>;
+			regulator-always-on = <1>;
+			regulator-boot-on = <1>;
+
+			/* buck,vol = <AXP228_DCDC2_VOL_VALUE>; */
+			buck,on = <AXP228_DCDC2_ENABLE>;
+			buck,sleep = <AXP228_DCDC2_SLEEP>;
+			buck,work_mode = <AXP228_DCDC2_WORK_MODE>;
+		};
+
+		dcdc3: BUCK2 {
+			regulator-name = AXP228_DCDC3_NAME;
+			regulator-min-microvolt = <AXP228_DCDC3_MIN>;
+			regulator-max-microvolt = <AXP228_DCDC3_MAX>;
+			regulator-always-on = <1>;
+			regulator-boot-on = <1>;
+
+			/* buck,vol = <AXP228_DCDC3_VOL_VALUE>; */
+			buck,on = <AXP228_DCDC3_ENABLE>;
+			buck,sleep = <AXP228_DCDC3_SLEEP>;
+			buck,work_mode = <AXP228_DCDC3_WORK_MODE>;
+		};
+
+		dcdc4: BUCK3 {
+			regulator-name = AXP228_DCDC4_NAME;
+			regulator-min-microvolt = <AXP228_DCDC4_MIN>;
+			regulator-max-microvolt = <AXP228_DCDC4_MAX>;
+			regulator-always-on = <1>;
+			regulator-boot-on = <1>;
+
+			buck,vol = <AXP228_DCDC4_VOL_VALUE>;
+			buck,on = <AXP228_DCDC4_ENABLE>;
+			buck,sleep = <AXP228_DCDC4_SLEEP>;
+			buck,work_mode = <AXP228_DCDC4_WORK_MODE>;
+		};
+
+		dcdc5: BUCK4 {
+			regulator-name = AXP228_DCDC5_NAME;
+			regulator-min-microvolt = <AXP228_DCDC5_MIN>;
+			regulator-max-microvolt = <AXP228_DCDC5_MAX>;
+			regulator-always-on = <1>;
+			regulator-boot-on = <1>;
+
+			buck,vol = <AXP228_DCDC5_VOL_VALUE>;
+			buck,on = <AXP228_DCDC5_ENABLE>;
+			buck,sleep = <AXP228_DCDC5_SLEEP>;
+			buck,work_mode = <AXP228_DCDC5_WORK_MODE>;
+		};
+
+		aldo1: LDO0 {
+			regulator-name = AXP228_ALDO1_NAME;
+			regulator-min-microvolt = <AXP228_ALDO1_MIN>;
+			regulator-max-microvolt = <AXP228_ALDO1_MAX>;
+			regulator-always-on = <1>;
+			regulator-boot-on = <1>;
+
+			ldo,vol = <AXP228_ALDO1_VOL_VALUE>;
+			ldo,on = <AXP228_ALDO1_ENABLE>;
+			ldo,sleep = <AXP228_ALDO1_SLEEP>;
+		};
+
+		aldo2: LDO1 {
+			regulator-name = AXP228_ALDO2_NAME;
+			regulator-min-microvolt = <AXP228_ALDO2_MIN>;
+			regulator-max-microvolt = <AXP228_ALDO2_MAX>;
+			regulator-always-on = <1>;
+			regulator-boot-on = <1>;
+
+			ldo,vol = <AXP228_ALDO2_VOL_VALUE>;
+			ldo,on = <AXP228_ALDO2_ENABLE>;
+			ldo,sleep = <AXP228_ALDO2_SLEEP>;
+		};
+
+		aldo3: LDO2 {
+			regulator-name = AXP228_ALDO3_NAME;
+			regulator-min-microvolt = <AXP228_ALDO3_MIN>;
+			regulator-max-microvolt = <AXP228_ALDO3_MAX>;
+			regulator-always-on = <1>;
+			regulator-boot-on = <1>;
+
+			ldo,vol = <AXP228_ALDO3_VOL_VALUE>;
+			ldo,on = <AXP228_ALDO3_ENABLE>;
+			ldo,sleep = <AXP228_ALDO3_SLEEP>;
+		};
+
+		dldo1: LDO3 {
+			regulator-name = AXP228_DLDO1_NAME;
+			regulator-min-microvolt = <AXP228_DLDO1_MIN>;
+			regulator-max-microvolt = <AXP228_DLDO1_MAX>;
+			regulator-always-on = <1>;
+			regulator-boot-on = <1>;
+
+			ldo,vol = <AXP228_DLDO1_VOL_VALUE>;
+			ldo,on = <AXP228_DLDO1_ENABLE>;
+			ldo,sleep = <AXP228_DLDO1_SLEEP>;
+		};
+
+		dldo2: LDO4 {
+			regulator-name = AXP228_DLDO2_NAME;
+			regulator-min-microvolt = <AXP228_DLDO2_MIN>;
+			regulator-max-microvolt = <AXP228_DLDO2_MAX>;
+			regulator-boot-on = <1>;
+
+			ldo,vol = <AXP228_DLDO2_VOL_VALUE>;
+			ldo,on = <AXP228_DLDO2_ENABLE>;
+			ldo,sleep = <AXP228_DLDO2_SLEEP>;
+		};
+
+		dldo3: LDO5 {
+			regulator-name = AXP228_DLDO3_NAME;
+			regulator-min-microvolt = <AXP228_DLDO3_MIN>;
+			regulator-max-microvolt = <AXP228_DLDO3_MAX>;
+			regulator-boot-on = <1>;
+
+			ldo,vol = <AXP228_DLDO3_VOL_VALUE>;
+			ldo,on = <AXP228_DLDO3_ENABLE>;
+			ldo,sleep = <AXP228_DLDO3_SLEEP>;
+		};
+
+		dldo4: LDO6 {
+			regulator-name = AXP228_DLDO4_NAME;
+			regulator-min-microvolt = <AXP228_DLDO4_MIN>;
+			regulator-max-microvolt = <AXP228_DLDO4_MAX>;
+			regulator-boot-on = <1>;
+
+			ldo,vol = <AXP228_DLDO4_VOL_VALUE>;
+			ldo,on = <AXP228_DLDO4_ENABLE>;
+			ldo,sleep = <AXP228_DLDO4_SLEEP>;
+		};
+
+		eldo1: LDO7 {
+			regulator-name = AXP228_ELDO1_NAME;
+			regulator-min-microvolt = <AXP228_ELDO1_MIN>;
+			regulator-max-microvolt = <AXP228_ELDO1_MAX>;
+			regulator-always-on = <1>;
+			regulator-boot-on = <1>;
+
+			ldo,vol = <AXP228_ELDO1_VOL_VALUE>;
+			ldo,on = <AXP228_ELDO1_ENABLE>;
+			ldo,sleep = <AXP228_ELDO1_SLEEP>;
+		};
+
+		eldo2: LDO8 {
+			regulator-name = AXP228_ELDO2_NAME;
+			regulator-min-microvolt = <AXP228_ELDO2_MIN>;
+			regulator-max-microvolt = <AXP228_ELDO2_MAX>;
+			regulator-boot-on = <1>;
+
+			ldo,vol = <AXP228_ELDO2_VOL_VALUE>;
+			ldo,on = <AXP228_ELDO2_ENABLE>;
+			ldo,sleep = <AXP228_ELDO2_SLEEP>;
+		};
+
+		eldo3: LDO9 {
+			regulator-name = AXP228_ELDO3_NAME;
+			regulator-min-microvolt = <AXP228_ELDO3_MIN>;
+			regulator-max-microvolt = <AXP228_ELDO3_MAX>;
+			regulator-boot-on = <1>;
+
+			ldo,vol = <AXP228_ELDO3_VOL_VALUE>;
+			ldo,on = <AXP228_ELDO3_ENABLE>;
+			ldo,sleep = <AXP228_ELDO3_SLEEP>;
+		};
+
+		dc5ldo: LDO10 {
+			regulator-name = AXP228_DC5LDO_NAME;
+			regulator-min-microvolt = <AXP228_DC5LDO_MIN>;
+			regulator-max-microvolt = <AXP228_DC5LDO_MAX>;
+			regulator-always-on = <1>;
+			regulator-boot-on = <1>;
+
+			ldo,vol = <AXP228_DC5LDO_VOL_VALUE>;
+			ldo,on = <AXP228_DC5LDO_ENABLE>;
+			ldo,sleep = <AXP228_DC5LDO_SLEEP>;
+		};
+	}; /* voltage-regulators */
+};
+
