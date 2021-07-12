@@ -43,15 +43,11 @@ static const struct sec_voltage_desc buck_v4 = {
 	.step = 50000,
 };
 
-
-
-
 static const struct sec_voltage_desc ldo_v1 = {
 	.max = 3300000,
 	.min = 700000,
 	.step = 100000,
 };
-
 
 static const struct sec_voltage_desc ldo_v2 = {
 	.max = 1400000,
@@ -81,7 +77,8 @@ static const struct axp228_para axp228_ldo_param[] = {
 	{AXP228_ID_DC5LDO, 0x1C, 0x0, 0x07, 0x10, 0, &ldo_v2},
 };
 
-static int axp228_reg_get_value(struct udevice *dev, const struct axp228_para *param)
+static int axp228_reg_get_value(struct udevice *dev,
+	const struct axp228_para *param)
 {
 	const struct sec_voltage_desc *desc;
 	int ret, uv, val;
@@ -97,8 +94,8 @@ static int axp228_reg_get_value(struct udevice *dev, const struct axp228_para *p
 	return uv;
 }
 
-static int axp228_reg_set_value(struct udevice *dev, const struct axp228_para *param,
-			 int uv)
+static int axp228_reg_set_value(struct udevice *dev,
+	const struct axp228_para *param, int uv)
 {
 	const struct sec_voltage_desc *desc;
 	int ret, val;
@@ -115,17 +112,6 @@ static int axp228_reg_set_value(struct udevice *dev, const struct axp228_para *p
 	return ret;
 }
 
-static int axp228_ldo_probe(struct udevice *dev)
-{
-	struct dm_regulator_uclass_platdata *uc_pdata;
-
-	uc_pdata = dev_get_uclass_platdata(dev);
-
-	uc_pdata->type = REGULATOR_TYPE_LDO;
-	uc_pdata->mode_count = 0;
-
-	return 0;
-}
 static int axp228_ldo_get_value(struct udevice *dev)
 {
 	int ldo = dev->driver_data;
@@ -140,7 +126,8 @@ static int axp228_ldo_set_value(struct udevice *dev, int uv)
 	return axp228_reg_set_value(dev, &axp228_ldo_param[ldo], uv);
 }
 
-static int axp228_reg_get_enable(struct udevice *dev, const struct axp228_para *param)
+static int axp228_reg_get_enable(struct udevice *dev,
+	const struct axp228_para *param)
 {
 	bool enable;
 	int ret;
@@ -154,14 +141,10 @@ static int axp228_reg_get_enable(struct udevice *dev, const struct axp228_para *
 	return enable;
 }
 
-static int axp228_reg_set_enable(struct udevice *dev, const struct axp228_para *param,
-			  bool enable)
+static int axp228_reg_set_enable(struct udevice *dev,
+	const struct axp228_para *param, bool enable)
 {
 	int ret;
-
-	ret = pmic_reg_read(dev->parent, param->reg_enaddr);
-	if (ret < 0)
-		return ret;
 
 	ret = pmic_clrsetbits(dev->parent, param->reg_enaddr,
 		0x1 << param->reg_enbitpos,
@@ -184,14 +167,91 @@ static int axp228_ldo_set_enable(struct udevice *dev, bool enable)
 	return axp228_reg_set_enable(dev, &axp228_ldo_param[ldo], enable);
 }
 
-static int axp228_buck_probe(struct udevice *dev)
+static int axp228_ldo_probe(struct udevice *dev)
 {
+	struct dm_axp228_ldo_platdata *pdata = dev->platdata;
 	struct dm_regulator_uclass_platdata *uc_pdata;
+	int ldo_id = dev->driver_data;
+	bool enable = false;
+	u8 reg = 0, pos = 0;
 
 	uc_pdata = dev_get_uclass_platdata(dev);
 
-	uc_pdata->type = REGULATOR_TYPE_BUCK;
+	uc_pdata->type = REGULATOR_TYPE_LDO;
 	uc_pdata->mode_count = 0;
+
+	if (pdata->vol != -ENODATA)
+		axp228_ldo_set_value(dev, pdata->vol);
+
+	if (pdata->sleep != -ENODATA) {
+		enable = (bool)pdata->sleep;
+		switch (ldo_id) {
+		case AXP228_ID_ALDO1:
+			reg = AXP228_PWREN_CTL1;
+			pos = AXP228_ALDO1_BIT;
+			break;
+		case AXP228_ID_ALDO2:
+			reg = AXP228_PWREN_CTL1;
+			pos = AXP228_ALDO2_BIT;
+			break;
+		case AXP228_ID_ALDO3:
+			reg = AXP228_PWREN_CTL1;
+			pos = AXP228_ALDO3_BIT;
+			break;
+		case AXP228_ID_DLDO1:
+			reg = AXP228_PWREN_CTL2;
+			pos = AXP228_DLDO1_BIT;
+			break;
+		case AXP228_ID_DLDO2:
+			reg = AXP228_PWREN_CTL2;
+			pos = AXP228_DLDO2_BIT;
+			break;
+		case AXP228_ID_DLDO3:
+			reg = AXP228_PWREN_CTL2;
+			pos = AXP228_DLDO3_BIT;
+			break;
+		case AXP228_ID_ELDO1:
+			reg = AXP228_PWREN_CTL2;
+			pos = AXP228_ELDO1_BIT;
+			break;
+		case AXP228_ID_ELDO2:
+			reg = AXP228_PWREN_CTL2;
+			pos = AXP228_ELDO2_BIT;
+			break;
+		case AXP228_ID_ELDO3:
+			reg = AXP228_PWREN_CTL2;
+			pos = AXP228_ELDO3_BIT;
+			break;
+		case AXP228_ID_DC5LDO:
+			reg = AXP228_PWREN_CTL2;
+			pos = AXP228_DC5LDO_BIT;
+			break;
+		}
+
+		pmic_clrsetbits(dev->parent, reg,
+				0x1 << pos, enable ? (0x1 << pos) : 0);
+	}
+
+	if (pdata->on != -ENODATA)
+		axp228_ldo_set_enable(dev, (bool)pdata->on);
+
+	return 0;
+}
+
+static int axp228_ldo_ofdata_to_platdata(struct udevice *dev)
+{
+	struct dm_axp228_ldo_platdata *pdata = dev->platdata;
+	const void *blob = gd->fdt_blob;
+	int offset = dev->of_offset;
+
+	pdata->vol = fdtdec_get_int(blob, offset,
+		"ldo,vol", -ENODATA);
+
+	pdata->sleep = fdtdec_get_int(blob, offset,
+		"ldo,sleep", -ENODATA);
+
+	pdata->on = fdtdec_get_int(blob, offset,
+		"ldo,on", -ENODATA);
 
 	return 0;
 }
@@ -224,6 +284,107 @@ static int axp228_buck_set_enable(struct udevice *dev, bool enable)
 	return axp228_reg_set_enable(dev, &axp228_buck_param[buck], enable);
 }
 
+static int axp228_buck_probe(struct udevice *dev)
+{
+	struct dm_axp228_buck_platdata *pdata = dev->platdata;
+	struct dm_regulator_uclass_platdata *uc_pdata;
+	int buck_id = dev->driver_data;
+	bool enable = false;
+	u8 reg = 0, pos = 0;
+
+	uc_pdata = dev_get_uclass_platdata(dev);
+
+	uc_pdata->type = REGULATOR_TYPE_BUCK;
+	uc_pdata->mode_count = 0;
+
+	if (pdata->vol != -ENODATA)
+		axp228_buck_set_value(dev, pdata->vol);
+
+	if (pdata->sleep != -ENODATA) {
+		enable = (bool)pdata->sleep;
+		switch (buck_id) {
+		case AXP228_ID_DCDC1:
+			reg = AXP228_PWREN_CTL1;
+			pos = AXP228_DCDC1_BIT;
+			break;
+		case AXP228_ID_DCDC2:
+			reg = AXP228_PWREN_CTL1;
+			pos = AXP228_DCDC2_BIT;
+			break;
+		case AXP228_ID_DCDC3:
+			reg = AXP228_PWREN_CTL1;
+			pos = AXP228_DCDC3_BIT;
+			break;
+		case AXP228_ID_DCDC4:
+			reg = AXP228_PWREN_CTL1;
+			pos = AXP228_DCDC4_BIT;
+			break;
+		case AXP228_ID_DCDC5:
+			reg = AXP228_PWREN_CTL1;
+			pos = AXP228_DCDC5_BIT;
+			break;
+		}
+
+		pmic_clrsetbits(dev->parent, reg,
+				0x1 << pos, enable ? (0x1 << pos) : 0);
+	}
+
+	if (pdata->work_mode != -ENODATA) {
+		enable = (bool)pdata->work_mode;
+		switch (buck_id) {
+		case AXP228_ID_DCDC1:
+			reg = AXP228_DCDC_MODESET;
+			pos = AXP228_DCDC1_MODE_BIT;
+			break;
+		case AXP228_ID_DCDC2:
+			reg = AXP228_DCDC_MODESET;
+			pos = AXP228_DCDC2_MODE_BIT;
+			break;
+		case AXP228_ID_DCDC3:
+			reg = AXP228_DCDC_MODESET;
+			pos = AXP228_DCDC3_MODE_BIT;
+			break;
+		case AXP228_ID_DCDC4:
+			reg = AXP228_DCDC_MODESET;
+			pos = AXP228_DCDC4_MODE_BIT;
+			break;
+		case AXP228_ID_DCDC5:
+			reg = AXP228_DCDC_MODESET;
+			pos = AXP228_DCDC5_MODE_BIT;
+			break;
+		}
+
+		pmic_clrsetbits(dev->parent, reg,
+				0x1 << pos, enable ? (0x1 << pos) : 0);
+	}
+
+	if (pdata->on != -ENODATA)
+		axp228_buck_set_enable(dev, (bool)pdata->on);
+
+	return 0;
+}
+
+static int axp228_buck_ofdata_to_platdata(struct udevice *dev)
+{
+	struct dm_axp228_buck_platdata *pdata = dev->platdata;
+	const void *blob = gd->fdt_blob;
+	int offset = dev->of_offset;
+
+	pdata->vol = fdtdec_get_int(blob, offset,
+		"buck,vol", -ENODATA);
+
+	pdata->sleep = fdtdec_get_int(blob, offset,
+		"buck,sleep", -ENODATA);
+
+	pdata->work_mode = fdtdec_get_int(blob, offset,
+		"buck,work_mode", -ENODATA);
+
+	pdata->on = fdtdec_get_int(blob, offset,
+		"buck,on", -ENODATA);
+
+	return 0;
+}
+
 static const struct dm_regulator_ops axp228_ldo_ops = {
 	.get_value  = axp228_ldo_get_value,
 	.set_value  = axp228_ldo_set_value,
@@ -236,6 +397,8 @@ U_BOOT_DRIVER(axp228_ldo) = {
 	.id = UCLASS_REGULATOR,
 	.ops = &axp228_ldo_ops,
 	.probe = axp228_ldo_probe,
+	.ofdata_to_platdata = axp228_ldo_ofdata_to_platdata,
+	.platdata_auto_alloc_size = sizeof(struct dm_axp228_ldo_platdata),
 };
 
 static const struct dm_regulator_ops axp228_buck_ops = {
@@ -250,4 +413,6 @@ U_BOOT_DRIVER(axp228_buck) = {
 	.id = UCLASS_REGULATOR,
 	.ops = &axp228_buck_ops,
 	.probe = axp228_buck_probe,
+	.ofdata_to_platdata = axp228_buck_ofdata_to_platdata,
+	.platdata_auto_alloc_size = sizeof(struct dm_axp228_buck_platdata),
 };
