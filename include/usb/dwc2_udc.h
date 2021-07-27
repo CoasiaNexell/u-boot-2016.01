@@ -28,4 +28,8 @@ struct dwc2_plat_otg_data {
 int dwc2_udc_probe(struct dwc2_plat_otg_data *pdata);
 #endif
 
+#ifdef CONFIG_SW_UBC_DETECT
+void usb_clear_connect(void);
+bool usb_get_connect(void);
+#endif
 #endif	/* __DWC2_USB_GADGET */
