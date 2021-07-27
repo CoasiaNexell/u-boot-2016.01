@@ -361,6 +361,13 @@ static int axp228_buck_probe(struct udevice *dev)
 	if (pdata->on != -ENODATA)
 		axp228_buck_set_enable(dev, (bool)pdata->on);
 
+#ifndef QUICKBOOT
+	reg = pmic_reg_read(dev->parent, AXP228_DCDC_MODESET);
+	printf("AXP228 Regulator: %14s: %4dmV  %s\n", uc_pdata->name
+		, axp228_buck_get_value(dev) / 1000
+		, (reg & (1 << buck_id)) ? "PWM" : "PFM");
+#endif
+
 	return 0;
 }
 
