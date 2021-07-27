@@ -141,6 +141,43 @@ static int axp228_reg_dump(struct udevice *dev, const char *title)
 }
 #endif
 
+static int axp228_init_chip(struct udevice *dev)
+{
+	uint8_t chip_id = 0;
+	int err, i;
+	struct int_reg v[10] = {
+		{ .reg = AXP228_INTEN1, .val = 0xd8},
+		{ .reg = AXP228_INTEN2, .val = 0xff},
+		{ .reg = AXP228_INTEN3, .val = 0x00},
+		{ .reg = AXP228_INTEN4, .val = 0x01},
+		{ .reg = AXP228_INTEN5, .val = 0x00},
+		{ .reg = AXP228_INTSTS1, .val = 0xff},
+		{ .reg = AXP228_INTSTS2, .val = 0xff},
+		{ .reg = AXP228_INTSTS3, .val = 0xff},
+		{ .reg = AXP228_INTSTS4, .val = 0xff},
+		{ .reg = AXP228_INTSTS5, .val = 0xff}
+	};
+
+	/*read chip id*/
+	err = axp228_read(dev, AXP228_IC_TYPE, &chip_id, 1);
+	if (err) {
+		printf("[AXP228] read chip id failed!\n");
+		return err;
+	}
+	printf("AXP228 CHIP ID  : 0x%02x detected\n", chip_id);
+
+	/*enable irqs and clear*/
+	for (i = 0; i < 10; i++) {
+		err = axp228_write(dev, v[i].reg, &v[i].val, 1);
+		if (err) {
+			printf("[AXP228] clear irq failed!\n");
+			return err;
+		}
+	}
+
+	return 0;
+}
+
 static void axp228_device_setup(struct udevice *dev)
 {
 	struct dm_axp228_platdata *pdata = dev->platdata;
@@ -196,6 +233,8 @@ static int axp228_probe(struct udevice *dev)
 
 	axp228_device_setup(dev);
 
+	axp228_init_chip(dev);
+
 #if defined(CONFIG_PMIC_REG_DUMP)
 	axp228_reg_dump(dev, "PMIC Setup Register Dump");
 #endif
@@ -229,19 +268,6 @@ static int axp228_ofdata_to_platdata(struct udevice *dev)
 	pdata->adc_control3 = fdtdec_get_int(blob, axp228_node,
 		"axp228,adc_control3", -ENODATA);
 
-	pdata->pek_on = fdtdec_get_int(blob, axp228_node,
-		"axp228,pek_on", -ENODATA);
-	pdata->pek_long = fdtdec_get_int(blob, axp228_node,
-		"axp228,pek_long", -ENODATA);
-	pdata->pek_off_en = fdtdec_get_int(blob, axp228_node,
-		"axp228,pek_off_en", -ENODATA);
-	pdata->pek_off_restart = fdtdec_get_int(blob, axp228_node,
-		"axp228,pek_off_restart", -ENODATA);
-	pdata->pek_delay = fdtdec_get_int(blob, axp228_node,
-		"axp228,pek_delay", -ENODATA);
-	pdata->pek_off = fdtdec_get_int(blob, axp228_node,
-		"axp228,pek_off", -ENODATA);
-
 	pdata->irq_wakeup = fdtdec_get_int(blob, axp228_node,
 		"axp228,irq_wakeup", -ENODATA);
 	pdata->vbusacin_func = fdtdec_get_int(blob, axp228_node,
@@ -260,36 +286,36 @@ static int axp228_ofdata_to_platdata(struct udevice *dev)
 
 static int axp228_bind(struct udevice *dev)
 {
-	int reg_node = 0;
-	int chg_node = 0;
+	struct dm_axp228_platdata *pdata = dev->platdata;
 	const void *blob = gd->fdt_blob;
-	int children;
 
 	debug("%s: dev->name:%s\n", __func__, dev->name);
 
 	if (!strncmp(dev->name, "axp228", 6)) {
-		reg_node = fdt_subnode_offset(blob, fdt_path_offset(blob, "/"),
-				"voltage-regulators");
-		chg_node = fdt_subnode_offset(blob, fdt_path_offset(blob, "/"),
-				"init-charger");
+		pdata->reg_node = fdt_subnode_offset(blob,
+			fdt_path_offset(blob, "/"), "voltage-regulators");
+		pdata->chg_node = fdt_subnode_offset(blob,
+			fdt_path_offset(blob, "/"), "init-charger");
 	} else {
-		reg_node = fdt_subnode_offset(blob, dev->of_offset,
+		pdata->reg_node = fdt_subnode_offset(blob, dev->of_offset,
 				"voltage-regulators");
 	}
 
-	if (reg_node > 0) {
+	if (pdata->reg_node > 0) {
 		debug("%s: found regulators subnode\n", __func__);
-		children = pmic_bind_children(dev, reg_node, pmic_reg_info);
-		if (!children)
+		pdata->child_reg = pmic_bind_children(dev, pdata->reg_node,
+			pmic_reg_info);
+		if (!pdata->child_reg)
 			debug("%s: %s - no child found\n", __func__, dev->name);
 	} else {
 		debug("%s: regulators subnode not found!\n", __func__);
 	}
 
-	if (chg_node > 0) {
+	if (pdata->chg_node > 0) {
 		debug("%s: found charger subnode\n", __func__);
-		children = pmic_bind_children(dev, chg_node, pmic_chg_info);
-		if (!children)
+		pdata->child_chg = pmic_bind_children(dev, pdata->chg_node,
+			pmic_chg_info);
+		if (!pdata->child_chg)
 			debug("%s: %s - no child found\n", __func__, dev->name);
 	} else {
 		debug("%s: charger subnode not found!\n", __func__);

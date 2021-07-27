@@ -215,54 +215,18 @@
 /* ETC */
 #define AXP228_REG_BANKSEL 0xFF
 
-#define ABS(x)((x) > 0 ? (x) : -(x))
-
-#define USBVOLLIM 4700 /* AXP22:4000~4700, 100/step */
-#define USBVOLLIMEN 1
-
-#define USBCURLIM 500 /* AXP22:500/900 */
-#define USBCURLIMEN 1
+/* USB Limit Value */
+#define AXP228_USB_LIMIT_900 0x00 /* USB3.0 : 900mA */
+#define AXP228_USB_LIMIT_500 0x01 /* USB2.0 : 500mA */
+#define AXP228_USB_LIMIT_NO 0x03 /* No limit current */
 
 /* charge current */
-#define CHARGE_CURRENT_500 500*1000
-#define CHARGE_CURRENT 1500*1000
-#define POWEROFF_CHARGE_CURRENT 1500*1000
+#define CHARGE_CURRENT_500 (500*1000)
+#define POWEROFF_CHARGE_CURRENT (1500*1000)
 
-/* limit charge current */
-#define LIMIT_CHARGE_CURRENT 1500*1000
+#define OCV_TABLE_SIZE 32
 
-/* set lowe power warning level */
-#define BATLOWLV1 15 /* AXP22:5%~20% */
-
-/* set lowe power shutdown level */
-#define BATLOWLV2 0 /* AXP22:0%~15% */
-
-/* set lowe power animation level */
-#define BATLOW_ANIMATION_CAP 1 /* AXP22:0%~100% */
-
-
-/* Init N_VBUSEN status*/
-#define VBUSEN 1
-
-/* Init InShort status*/
-#define VBUSACINSHORT 0
-
-/* Init CHGLED function*/
-#define CHGLEDFUN 1
-
-/* set CHGLED Indication Type*/
-#define CHGLEDTYPE 0
-
-/* Init PMU Over Temperature protection*/
-#define OTPOFFEN 0
-
-/* Init battery capacity correct function*/
-#define BATCAPCORRENT 1
-
-/* Init battery regulator enable or not when charge finish*/
-#define BATREGUEN 0
-
-#define BATDET 1
+#define ABS(x)((x) > 0 ? (x) : -(x))
 
 /* Unified sub device IDs for AXP */
 /* LDO0 For RTCLDO ,LDO1-3 for ALDO,LDO*/
@@ -312,6 +276,11 @@ struct axp228_para {
 };
 
 struct dm_axp228_platdata {
+	int reg_node;
+	int chg_node;
+	int child_reg;
+	int child_chg;
+
 	int freq_spread_en;
 	int spread_freq;
 	int poly_phase_function;
@@ -319,13 +288,6 @@ struct dm_axp228_platdata {
 
 	int voff_set;
 	int adc_control3;
-
-	int pek_on;
-	int pek_long;
-	int pek_off_en;
-	int pek_off_restart;
-	int pek_delay;
-	int pek_off;
 
 	int irq_wakeup;
 	int vbusacin_func;
@@ -349,47 +311,43 @@ struct dm_axp228_ldo_platdata {
 };
 
 struct dm_axp228_chg_platdata {
-	unsigned int version;
-	unsigned int state_of_chrg;
-	unsigned int capacity;
-	unsigned int voltage_uV;
-	unsigned int state;
+	int pek_on;
+	int pek_long;
+	int pek_off_en;
+	int pek_off_restart;
+	int pek_delay;
+	int pek_off;
+	int usbvolim;
+	int usbvollimen;
+	int usbcurlim;
+	int usbcurlimen;
 
-	int limit_adp_amps;
-	int limit_usb_amps;
-	int limit_usbdata_amps;
+	int charge_current;
+	int limit_current;
 
-	int chg_adp_amps;
-	int chg_usb_amps;
-	int current_complete;
+	int batlowlv1;
+	int batlowlv2;
 
-	int cutoff_vol;
-	int lowbat_battery_vol;
-	int lowbat_adp_vol;
-	int lowbat_usb_vol;
-	int lowbat_usbdata_vol;
+	const fdt32_t *ocvreg;
+	int ocvreg_len;
+	u8 ocv_table[OCV_TABLE_SIZE];
 
-	int priority;
-	int complete_dis;
-	int nobat_ovlim_en;
-	int otg_boost;
-	int suspend;
-	int jeitaen;
-	int usb_en;
-	int adp_en;
+	int ghcledfun;
+	int chgledtype;
+	int batcapcorrent;
+	int batreguen;
+	int batdet;
 
-	int rapid_ttim_80;
-	int rapid_ctime;
-	int rapid_rtime;
-
-	int power_on_vol;
-	int vbatov_set;
-	int vweak;
-	int vdead;
-	int vshort;
-
-	int vfchg;
+	int batrdc;
+	int batcap;
+	int ubcchecktimeout;
 };
+
+struct int_reg {
+	uint8_t reg;
+	uint8_t val;
+};
+
 /* Drivers name */
 #define AXP228_LDO_DRIVER "axp228_ldo"
 #define AXP228_BUCK_DRIVER "axp228_buck"

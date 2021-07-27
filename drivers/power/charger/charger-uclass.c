@@ -27,6 +27,16 @@ int charger_get_value_vbatt(struct udevice *dev)
 	return ops->get_value_vbatt(dev);
 }
 
+int charger_get_value_gauge(struct udevice *dev)
+{
+	const struct dm_charger_ops *ops = dev_get_driver_ops(dev);
+
+	if (!ops || !ops->get_value_gauge)
+		return -ENOSYS;
+
+	return ops->get_value_gauge(dev);
+}
+
 int charger_get_charge_type(struct udevice *dev)
 {
 	const struct dm_charger_ops *ops = dev_get_driver_ops(dev);
@@ -41,10 +51,10 @@ int charger_get_charge_current(struct udevice *dev)
 {
 	const struct dm_charger_ops *ops = dev_get_driver_ops(dev);
 
-	if (!ops || !ops->get_charge_type)
+	if (!ops || !ops->get_charge_current)
 		return -ENOSYS;
 
-	return ops->get_charge_type(dev);
+	return ops->get_charge_current(dev);
 }
 
 int charger_set_charge_current(struct udevice *dev, int uA)
@@ -57,14 +67,14 @@ int charger_set_charge_current(struct udevice *dev, int uA)
 	return ops->set_charge_current(dev, uA);
 }
 
-int charger_get_limit_current(struct udevice *dev)
+int charger_get_limit_current(struct udevice *dev, int type)
 {
 	const struct dm_charger_ops *ops = dev_get_driver_ops(dev);
 
 	if (!ops || !ops->get_limit_current)
 		return -ENOSYS;
 
-	return ops->get_limit_current(dev);
+	return ops->get_limit_current(dev, type);
 }
 
 int charger_set_limit_current(struct udevice *dev, int type, int uA)
