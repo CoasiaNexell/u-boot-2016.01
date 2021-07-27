@@ -5,7 +5,7 @@
 # SPDX-License-Identifier:	GPL-2.0+
 #
 
-obj-$(CONFIG_TARGET_S5P6818_DRONE)	+= drone/
+obj-$(CONFIG_TARGET_S5P6818_DRONE_REF)	+= drone_ref/
 obj-$(CONFIG_TARGET_ARTIK710_RAPTOR)	+= artik710_raptor/
 obj-$(CONFIG_TARGET_AVN_REF)	+= avn_ref/
 obj-$(CONFIG_TARGET_SVT_REF)	+= svt_ref/

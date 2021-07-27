@@ -1,10 +1,10 @@
 choice
 	prompt "Board select"
 
-config TARGET_S5P4418_DRONE
-	bool "S5P4418_DRONE"
+config TARGET_S5P4418_DRONE_REF
+	bool "S5P4418_DRONE_REF"
 	help
-	  Support for s5p4418 drone platform.
+	  Support for s5p4418 drone_ref platform.
 
 config TARGET_ARTIK530_RAPTOR
         bool "ARTIK530_RAPTOR"
