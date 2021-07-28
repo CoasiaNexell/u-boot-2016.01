@@ -461,6 +461,27 @@ static void process_ep_out_intr(struct dwc2_udc *dev)
 	}
 }
 
+#ifdef CONFIG_SW_UBC_DETECT
+int int_enumdone = 0;
+static void usb_set_int_enumdone(void)
+{
+	int_enumdone = 1;
+}
+
+void usb_clear_connect(void)
+{
+	int_enumdone = 0;
+}
+
+bool usb_get_connect(void)
+{
+	if (int_enumdone)
+		return true;
+	else
+		return false;
+}
+#endif
+
 /*
  *	usb client interrupt handler.
  */
@@ -489,7 +510,9 @@ static int dwc2_udc_irq(int irq, void *_dev)
 
 	if (intr_status & INT_ENUMDONE) {
 		debug_cond(DEBUG_ISR, "\tSpeed Detection interrupt\n");
-
+#ifdef CONFIG_SW_UBC_DETECT
+		usb_set_int_enumdone();
+#endif
 		writel(INT_ENUMDONE, &reg->gintsts);
 		usb_status = (readl(&reg->dsts) & 0x6);
 
