@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "f7271c21_af4ea7bb",
+        "filename": "drivers/video/nexell/s5pxx18_dp_hdmi.c",
+        "patchSetId": 1
+      },
+      "lineNbr": 802,
+      "author": {
+        "id": 1000013
+      },
+      "writtenOn": "2022-02-07T23:08:16Z",
+      "side": 1,
+      "message": "hdmi_get_vsync\u0027s vic defined in \"u8 *vic\" and hdmi_infoframe_set()\u0027s vic defined \"int *vic\".\nIf the vic value used in the function needs to be used in a different form, please use it by casting clearly.",
+      "range": {
+        "startLine": 800,
+        "startChar": 0,
+        "endLine": 802,
+        "endChar": 33
+      },
+      "revId": "23dc20446b1d7c475df30c9c4ec13a7a9a89f06c",
+      "serverId": "f3c90331-7953-4206-aadc-b7348badd027",
+      "unresolved": true
+    }
+  ]
+}
