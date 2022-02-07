@@ -32,6 +32,26 @@ void nx_hdmi_set_reg(u32 module_index, u32 offset, u32 regvalue)
 	writel(regvalue, (u32 *)reg_addr);
 }
 
+void nx_hdmi_set_regb(u32 module_index, u32 offset, u8 regvalue)
+{
+	s64 offset_new = (s64)((int32_t)offset);
+	u32 *reg_addr;
+
+	reg_addr = hdmi_base_addr + (offset_new / sizeof(u32));
+	writeb(regvalue, (u32 *)reg_addr);
+}
+
+void nx_hdmi_write_mask(u32 module_index, u32 offset, u32 regvalue, u32 mask)
+{
+	s64 offset_new = (s64)((int32_t)offset);
+	u32 *reg_addr;
+
+	reg_addr = hdmi_base_addr + (offset_new / sizeof(u32));
+
+	regvalue = (regvalue & mask) | (readl(reg_addr) & ~mask);
+	writel(regvalue, (u32 *)reg_addr);
+}
+
 void nx_hdmi_set_base_address(u32 module_index, void *base_address)
 {
 	hdmi_base_addr = (u32 *)base_address;
